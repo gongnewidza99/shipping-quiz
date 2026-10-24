@@ -4,406 +4,637 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>สรุปเนื้อหา & แบบทดสอบ: การคำนวณค่าระวางการขนส่งทางเรือ</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sarabun & Kanit -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            600: '#1e3a8a',
+                            800: '#0f172a',
+                            900: '#0a0e1a'
+                        },
+                        ocean: {
+                            500: '#0284c7',
+                            600: '#0369a1',
+                        }
+                    },
+                    fontFamily: {
+                        kanit: ['Kanit', 'sans-serif'],
+                        sarabun: ['Sarabun', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
-        h1, h2, h3, h4, .font-heading { font-family: 'Kanit', sans-serif; }
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f8fafc;
+        }
+        h1, h2, h3, h4, h5, h6, .font-heading {
+            font-family: 'Kanit', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Header Navigation -->
-    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b border-slate-800">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-sky-500 p-2.5 rounded-xl text-white shadow-md font-bold text-xl">🚢</div>
-                <div>
-                    <h1 class="text-xl font-bold tracking-wide">การคำนวณค่าระวางทางเรือ</h1>
-                    <p class="text-xs text-slate-400">ผู้สอน: เพ็ญพักตร์ มโนธรรม</p>
+    <!-- Header / Navbar -->
+    <header class="bg-gradient-to-r from-navy-800 via-navy-600 to-ocean-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-white/10 rounded-xl backdrop-blur-md">
+                        <i class="fa-solid fa-ship text-2xl text-amber-400"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-bold tracking-wide">การคำนวณค่าระวางการขนส่งทางเรือ</h1>
+                        <p class="text-xs md:text-sm text-slate-200 font-light">สรุปบทเรียนและแบบทดสอบประเมินความรู้ | ผู้สอน: อ.เพ็ญพักตร์ มโนธรรม</p>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700 w-full sm:w-auto">
-                <button id="tab-summary-btn" onclick="switchTab('summary')" class="flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white shadow">
-                    📖 สรุปเนื้อหาบทเรียน
-                </button>
-                <button id="tab-quiz-btn" onclick="switchTab('quiz')" class="flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white">
-                    📝 ทำแบบทดสอบ (10 ข้อ)
-                </button>
+
+                <!-- Navigation Tabs -->
+                <div class="flex bg-navy-900/40 p-1.5 rounded-xl border border-white/10 w-full md:w-auto">
+                    <button id="tab-btn-summary" onclick="switchTab('summary')" class="flex-1 md:flex-initial px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 bg-white text-navy-800 shadow">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>สรุปเนื้อหา</span>
+                    </button>
+                    <button id="tab-btn-quiz" onclick="switchTab('quiz')" class="flex-1 md:flex-initial px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 text-white hover:bg-white/10">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>แบบทดสอบ (10 ข้อ)</span>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
 
-        <!-- SECTION 1: SUMMARY -->
-        <div id="section-summary" class="space-y-8">
-            <div class="bg-gradient-to-r from-sky-900 via-slate-800 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
-                <span class="bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Sea Freight Logistics</span>
-                <h2 class="text-2xl sm:text-3xl font-bold mt-3 mb-2 font-heading">สรุปสาระสำคัญ การคำนวณค่าระวางและค่าใช้จ่าย</h2>
-                <p class="text-slate-300 text-sm leading-relaxed">รวบรวมหลักการคำนวณจำนวนบรรจุในตู้คอนเทนเนอร์ ฐานการคิดค่าระวางพื้นฐาน การขนส่งแบบ FCL/LCL และนิยามค่าธรรมเนียมพิเศษทั้งหมดจากสไลด์เรียน</p>
+        <!-- TAB 1: SUMMARY CONTENT -->
+        <div id="tab-summary" class="space-y-8 animate-fadeIn">
+
+            <!-- Banner / Overview Card -->
+            <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/80 relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none text-navy-800">
+                    <i class="fa-solid fa-boxes-packing text-[200px]"></i>
+                </div>
+                <div class="max-w-3xl">
+                    <span class="px-3 py-1 bg-ocean-500/10 text-ocean-600 rounded-full text-xs font-semibold uppercase tracking-wider">ภาพรวมบทเรียน</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-navy-800 mt-2 mb-3">สรุปหลักการคำนวณค่าระวางและค่าใช้จ่ายการขนส่งทางทะเล</h2>
+                    <p class="text-slate-600 leading-relaxed">
+                        เนื้อหานี้ครอบคลุมขั้นตอนการคำนวณจำนวนบรรจุสินค้าเข้าตู้คอนเทนเนอร์ (Box Arrangement Method), การพิจารณาฐานคำนวณค่าระวาง (น้ำหนัก/ปริมาตร/มูลค่า/หน่วย), ข้อแตกต่างระหว่าง FCL และ LCL รวมถึงนิยามและรหัสย่อของค่าระวางขนส่งพิเศษ (Surcharges) ต่างๆ
+                    </p>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Topic 1 -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <div class="flex items-center space-x-3 mb-4 border-b border-slate-100 pb-3">
-                        <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg">1</div>
-                        <h3 class="text-lg font-bold text-slate-800 font-heading">การคำนวณจำนวนบรรจุในตู้คอนเทนเนอร์</h3>
+            <!-- Grid Sections -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                <!-- Section 1: Container Calculation -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-slate-100">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg">1</div>
+                            <h3 class="text-xl font-bold text-navy-800">การคำนวณจำนวนบรรจุในตู้คอนเทนเนอร์</h3>
+                        </div>
+
+                        <div class="space-y-4 text-sm text-slate-700">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i class="fa-solid fa-list-check text-ocean-500 mr-2"></i> ข้อมูลที่ต้องเตรียม</h4>
+                                <ul class="list-disc list-inside space-y-1 text-slate-600">
+                                    <li>ขนาดภายในตู้คอนเทนเนอร์ (ยาว × กว้าง × สูง)</li>
+                                    <li>ขนาดภายนอกของกล่องสินค้า (วัดส่วนนอกสุดเสมอ)</li>
+                                    <li>น้ำหนักสินค้าต่อชิ้น & น้ำหนักบรรทุกสูงสุด (Max Payload)</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-slate-800 mb-2">วิธีจัดวางกล่อง (Box Arrangement Method)</h4>
+                                <p class="text-slate-600 mb-2">การหาจำนวนกล่องที่บรรจุได้สูงสุดทำได้โดยทดลองวาง 3 แบบ แล้วเลือกแบบที่ได้จำนวนกล่องมากที่สุดภายใต้เงื่อนไขไม่เกินน้ำหนักบรรทุกสูงสุด:</p>
+                                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                                    <div class="p-2 bg-blue-50 text-blue-800 rounded-lg font-medium border border-blue-100">แบบที่ 1<br><span class="font-normal text-[11px]">ยาว-กว้าง-สูงปกติ</span></div>
+                                    <div class="p-2 bg-green-50 text-green-800 rounded-lg font-medium border border-green-100">แบบที่ 2<br><span class="font-normal text-[11px]">สลับกว้าง-ยาว</span></div>
+                                    <div class="p-2 bg-purple-50 text-purple-800 rounded-lg font-medium border border-purple-100">แบบที่ 3<br><span class="font-normal text-[11px]">ปรับทิศทางสูง</span></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-amber-50 p-3 rounded-xl border border-amber-200/60 text-xs text-amber-900 flex items-start space-x-2">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm mt-0.5"></i>
+                                <div>
+                                    <strong class="font-semibold">ข้อควรระวังสำคัญ!</strong> เมื่อได้จำนวนกล่องแล้ว ต้องนำไปคูณ Gross Weight แล้วเช็คว่าไม่เกิน Payload Limit ของตู้เรือ (เช่น ตู้ 20' ทั่วไป รับน้ำหนักได้ประมาณ 28,000 กก.)
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <ul class="space-y-3 text-sm text-slate-600">
-                        <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">✓</span> <span><strong>ข้อมูลที่ต้องใช้:</strong> ขนาดภายในตู้คอนเทนเนอร์, ขนาดสินค้าแต่ละชิ้น, น้ำหนัก และ Payload สูงสุด</span></li>
-                        <li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">✓</span> <span><strong>วิธีคำนวณ:</strong> หาจำนวนกล่องตาม [ความยาว] × [ความกว้าง] × [ความสูง] แล้วสลับทิศทางเพื่อให้ได้จำนวนสูงสุด</span></li>
-                        <li class="flex items-start gap-2"><span class="text-amber-500 font-bold">⚠️</span> <span><strong>จุดระวัง:</strong> น้ำหนักรวมกล่องทั้งหมดต้องไม่เกิน Payload สูงสุดของตู้</span></li>
-                    </ul>
                 </div>
 
-                <!-- Topic 2 -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                    <div class="flex items-center space-x-3 mb-4 border-b border-slate-100 pb-3">
-                        <div class="w-10 h-10 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-lg">2</div>
-                        <h3 class="text-lg font-bold text-slate-800 font-heading">ฐานในการคำนวณค่าระวางสินค้า</h3>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><strong class="text-sky-600">Weight Ton (W)</strong>: คิดตามน้ำหนัก (ตัน) เช่น เหล็ก กระจก</div>
-                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><strong class="text-emerald-600">Measurement (M)</strong>: คิดตามปริมาตร CBM เช่น ไม้ซุง</div>
-                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><strong class="text-purple-600">Ad Valorem (V)</strong>: 3.5% จากราคา FOB เช่น เพชร ทอง</div>
-                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><strong class="text-amber-600">Per Unit</strong>: คิดตามจำนวนชิ้น เช่น รถยนต์</div>
+                <!-- Section 2: Freight Calculation Basis -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-slate-100">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg">2</div>
+                            <h3 class="text-xl font-bold text-navy-800">ฐานในการคำนวณค่าระวาง (Freight Basis)</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl">
+                                <span class="font-bold text-sm text-emerald-700 block mb-1"><i class="fa-solid fa-weight-hanging mr-1"></i> 1. น้ำหนัก (Weight Ton : W)</span>
+                                <p class="text-slate-600">ใช้กับสินค้าหนัก เช่น เหล็กกล้า, กระจก, กระเบื้อง, อาหารกระป๋อง คิดเป็นอัตราต่อตัน</p>
+                            </div>
+                            <div class="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl">
+                                <span class="font-bold text-sm text-blue-700 block mb-1"><i class="fa-solid fa-cube mr-1"></i> 2. ปริมาตร (Measurement Ton : M)</span>
+                                <p class="text-slate-600">ใช้กับสินค้ากินพื้นที่จัดเรียง เช่น ไม้ซุง คำนวณเป็นลูกบาศก์เมตร (CBM / m³)</p>
+                            </div>
+                            <div class="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl">
+                                <span class="font-bold text-sm text-purple-700 block mb-1"><i class="fa-solid fa-gem mr-1"></i> 3. มูลค่าสินค้า (Ad Valorem : V)</span>
+                                <p class="text-slate-600">ใช้กับของมีค่าแพง เช่น ทองคำ, เพชร, ภาพเขียน (ปกติคิดอัตรา 3.5% จากราคา FOB)</p>
+                            </div>
+                            <div class="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl">
+                                <span class="font-bold text-sm text-amber-700 block mb-1"><i class="fa-solid fa-car mr-1"></i> 4. จำนวนชิ้น/หน่วย (Per Unit)</span>
+                                <p class="text-slate-600">คิดเป็นรายคัน/หัว/ต้น/ถัง เช่น รถยนต์, สัตว์มีชีวิต, ต้นไม้, น้ำมันต่อถัง (Barrel)</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Topic 3 -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm md:col-span-2">
-                    <div class="flex items-center space-x-3 mb-4 border-b border-slate-100 pb-3">
-                        <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">3</div>
-                        <h3 class="text-lg font-bold text-slate-800 font-heading">การขนส่งแบบ FCL และ LCL</h3>
+                <!-- Section 3: FCL vs LCL -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 lg:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">3</div>
+                        <h3 class="text-xl font-bold text-navy-800">การคำนวณค่าระวาง FCL vs LCL</h3>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                        <div class="p-4 bg-emerald-50/50 rounded-xl border border-emerald-100">
-                            <h4 class="font-bold text-slate-800 mb-1"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-xs rounded">FCL</span> เหมาตู้คอนเทนเนอร์</h4>
-                            <p class="text-slate-600 text-xs leading-relaxed">คิดราคาเหมาตามประเภทตู้ (20'DC, 40'HC) พร้อมค่าใช้จ่ายท้องถิ่น เช่น THC, B/L Fee</p>
+                        <!-- FCL -->
+                        <div class="border border-indigo-100 bg-indigo-50/40 rounded-xl p-4">
+                            <h4 class="font-bold text-indigo-900 text-base mb-2 flex items-center">
+                                <i class="fa-solid fa-box text-indigo-600 mr-2"></i> FCL (Full Container Load)
+                            </h4>
+                            <p class="text-slate-600 text-xs mb-3">การเหมาตู้คอนเทนเนอร์ ค่าระวางเรือ (Ocean Freight: O/F) จะคิดเป็นราคาเหมาต่อขนาด/ประเภทตู้ เช่น 20'DC, 40'HC, 20'RF</p>
+                            <div class="text-xs bg-white p-3 rounded-lg border border-indigo-100 space-y-1 text-slate-700">
+                                <p><strong class="text-slate-800">ค่าใช้จ่ายท้องถิ่น (Local Charge ในไทย):</strong></p>
+                                <ul class="list-disc list-inside pl-1 space-y-0.5 text-slate-600">
+                                    <li><strong>THC (Terminal Handling Charge):</strong> ค่าภาระหน้าท่า</li>
+                                    <li><strong>Seal Charge:</strong> ค่าซีลล็อคตู้ (ประมาณ 300 บาท)</li>
+                                    <li><strong>B/L Fee:</strong> ค่าออกใบตราส่งสินค้าทางเรือ (ประมาณ 1,500 บาท/ฉบับ)</li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="p-4 bg-sky-50/50 rounded-xl border border-sky-100">
-                            <h4 class="font-bold text-slate-800 mb-1"><span class="px-2 py-0.5 bg-sky-100 text-sky-800 text-xs rounded">LCL</span> แชร์ตู้สินค้า</h4>
-                            <p class="text-slate-600 text-xs leading-relaxed">เปรียบเทียบระหว่าง Volume Weight (CBM) กับ Actual Weight (ตัน) เลือกค่าที่มากกว่ามาคำนวณ</p>
+
+                        <!-- LCL -->
+                        <div class="border border-teal-100 bg-teal-50/40 rounded-xl p-4">
+                            <h4 class="font-bold text-teal-900 text-base mb-2 flex items-center">
+                                <i class="fa-solid fa-boxes-stacked text-teal-600 mr-2"></i> LCL (Less Container Load)
+                            </h4>
+                            <p class="text-slate-600 text-xs mb-3">การแชร์ตู้สินค้า ต้องคำนวณเปรียบเทียบระหว่าง <strong>Volume Weight</strong> กับ <strong>Actual Weight</strong> แล้วเลือกใช้อัตราที่มากกว่า</p>
+                            <div class="text-xs bg-white p-3 rounded-lg border border-teal-100 space-y-2">
+                                <div>
+                                    <span class="font-bold text-slate-800">1. Volume Weight (CBM):</span>
+                                    <div class="font-mono bg-slate-100 p-1.5 rounded mt-0.5 text-center">[กว้าง(ซม.) × ยาว(ซม.) × สูง(ซม.) × จำนวนกล่อง] ÷ 1,000,000</div>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-slate-800">2. Actual Weight (Ton):</span>
+                                    <div class="font-mono bg-slate-100 p-1.5 rounded mt-0.5 text-center">[น้ำหนักต่อกล่อง (กก.) × จำนวนกล่อง] ÷ 1,000</div>
+                                </div>
+                                <p class="text-slate-500 italic text-[11px]">* หมายเหตุ: ค่า CFS (Container Freight Station) คือค่าบริการบรรจุ/จัดสินค้าที่ลานโหลดตู้</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Topic 4 -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm md:col-span-2">
-                    <div class="flex items-center space-x-3 mb-4 border-b border-slate-100 pb-3">
-                        <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">4</div>
-                        <h3 class="text-lg font-bold text-slate-800 font-heading">สรุปค่าระวางพิเศษและค่าธรรมเนียม (Surcharges)</h3>
+                <!-- Section 4: Special Surcharges Dictionary -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 lg:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-lg">4</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-navy-800">ค่าระวางขนส่งพิเศษ / ค่าธรรมเนียมเพิ่มเติม (Surcharges)</h3>
+                            <p class="text-xs text-slate-500">ค่าธรรมเนียมที่สายการเรือเรียกเก็บเพิ่มนอกเหนือจากค่าระวางพื้นฐาน</p>
+                        </div>
                     </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">BAF / FAF / EBS</span> : ค่าปรับตามราคาน้ำมัน</div>
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">CAF</span> : ค่าปรับอัตราแลกเปลี่ยนเงินตรา</div>
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">Congestion Surcharge</span> : ค่าท่าเรือคับคั่ง</div>
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">Terminal Charge / THC</span> : ค่าจัดการหน้าท่า</div>
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">Heavy Lift Charge</span> : ค่าน้ำหนักเกินกำหนด</div>
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">Transhipment</span> : ค่าถ่ายลำเรือ</div>
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">OCP / Local Freight</span> : ค่าขนส่งทางบก/รถไฟไปปลายทาง</div>
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">CIC</span> : ค่าความไม่สมดุลของตู้สินค้า</div>
-                        <div class="p-2.5 bg-slate-50 rounded-lg"><span class="font-bold text-sky-700">AMS</span> : ค่าแจ้งข้อมูลล่วงหน้า 24 ชม.</div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">BAF / FAF / EBS / IFD</span>
+                            <p class="text-slate-600"><strong>ค่าธรรมเนียมน้ำมัน:</strong> ปรับชดเชยตามความผันผวนของราคาน้ำมันเชื้อเพลิงเรือและปลายทาง</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">CAF</span>
+                            <p class="text-slate-600"><strong>Currency Adjustment Factor:</strong> ค่าปรับอัตราแลกเปลี่ยนเงินตราต่างประเทศ (เช่น USD)</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">Congestion Surcharge</span>
+                            <p class="text-slate-600"><strong>ค่าท่าเรือคับคั่ง:</strong> เรียกเก็บเมื่อท่าเรือแออัด แรงงานไม่พอ นัดหยุดงาน หรือจลาจล</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">Terminal Charge</span>
+                            <p class="text-slate-600"><strong>ค่าเปิด/บรรจุตู้:</strong> เก็บเมื่อให้เรือจัดการบรรจุสินค้าเข้าตู้ หรือเปิดสินค้าออกจากตู้</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">Heavy Lift Charge</span>
+                            <p class="text-slate-600"><strong>ค่าน้ำหนักเกิน:</strong> สินค้าหนักเกินกำหนด (เช่น >1-2 ตัน) ต้องใช้เครน/ปั้นจั่นพิเศษยก</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">Lengthy / Bulky Cargo</span>
+                            <p class="text-slate-600"><strong>ค่าขนาดเกินกำหนด:</strong> สินค้ายาวเกิน 30 ฟุต หรือปริมาตรเกิน 40 ลูกบาศก์ฟุต</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">Transhipment Charge</span>
+                            <p class="text-slate-600"><strong>ค่าถ่ายลำ:</strong> กรณีสินค้าต้องเปลี่ยนถ่ายเรือตั้งแต่ 2 ลำขึ้นไป มีค่าจัดการโกดังเพิ่มเติม</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">O.C.P / Local Freight</span>
+                            <p class="text-slate-600"><strong>ค่าขนส่งต่อถึงปลายทาง:</strong> Overland Common Point ค่าลากตู้ไปโรงงาน/ขนส่งทางรถไฟ</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">CSS / TSSD</span>
+                            <p class="text-slate-600"><strong>ค่ารักษาความปลอดภัย:</strong> ความปลอดภัยของตู้สินค้า (CSS) และความปลอดภัย ณ ท่าเรือ (TSSD)</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">SUZ / PAN / ALMD / AGS</span>
+                            <p class="text-slate-600"><strong>ค่าผ่านทาง/น่านน้ำพิเศษ:</strong> คลอง Suez (SUZ), คลอง Panama (PAN), Alameda Corridor (ALMD), อ่าวเอเดน (AGS)</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">PSS / GRI</span>
+                            <p class="text-slate-600"><strong>ปรับตามตลาด:</strong> Peak Season Surcharge (ช่วงไฮซีซั่น) และ General Rate Increase (ปรับตามราคาตลาด)</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <span class="font-bold text-navy-800 text-sm block mb-0.5">CIC / AMS</span>
+                            <p class="text-slate-600"><strong>ความสมดุลและข้อมูล:</strong> Container Imbalance Surcharge (CIC) และ Automated Manifest System (AMS) ป้องกันก่อการร้าย</p>
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div>
 
-        <!-- SECTION 2: QUIZ -->
-        <div id="section-quiz" class="hidden space-y-6 max-w-3xl mx-auto">
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+        <!-- TAB 2: QUIZ SECTION -->
+        <div id="tab-quiz" class="hidden space-y-6 animate-fadeIn">
+
+            <!-- Quiz Header Banner -->
+            <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-800 font-heading">แบบทดสอบวัดความรู้ (10 ข้อ)</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">ระบบจะสุ่มคำถามและสุ่มตัวเลือกใหม่ทุกครั้งที่กดทำใหม่</p>
+                    <span class="px-3 py-1 bg-purple-500/10 text-purple-600 rounded-full text-xs font-semibold uppercase tracking-wider">แบบทดสอบความรู้</span>
+                    <h2 class="text-2xl font-bold text-navy-800 mt-1">ทดสอบความเข้าใจเกี่ยวกับการคำนวณค่าระวางเรือ</h2>
+                    <p class="text-xs md:text-sm text-slate-500 mt-1">เลือกคำตอบที่ถูกต้องที่สุดเพียงข้อเดียวในแต่ละข้อ (ทั้งหมด 10 ข้อ)</p>
                 </div>
-                <button onclick="renderQuiz()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">
-                    🔄 สุ่มข้อสอบใหม่
-                </button>
-            </div>
 
-            <form id="quiz-form" class="space-y-6"></form>
-
-            <div id="quiz-submit-container" class="pt-4 text-center">
-                <button type="button" onclick="calculateQuizScore()" class="px-8 py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-2xl shadow-lg transition text-base font-heading w-full sm:w-auto">
-                    ส่งคำตอบและตรวจคะแนน
-                </button>
-            </div>
-
-            <div id="quiz-result-card" class="hidden bg-white rounded-2xl p-8 border border-slate-200 shadow-xl text-center space-y-4">
-                <div id="result-icon-container" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto text-3xl"></div>
-                <h3 class="text-2xl font-bold font-heading text-slate-800">สรุปผลคะแนน</h3>
-                <div class="py-2">
-                    <span class="text-5xl font-black font-heading text-sky-600" id="result-score-num">0</span>
-                    <span class="text-2xl font-bold text-slate-400">/ 10</span>
+                <div id="quiz-status-badge" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium flex items-center space-x-2">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>สถานะ: ยังไม่ได้ส่งทำแบบทดสอบ</span>
                 </div>
-                <p id="result-feedback" class="text-sm text-slate-600 max-w-md mx-auto"></p>
-                <button type="button" onclick="renderQuiz()" class="px-6 py-2.5 bg-sky-600 text-white rounded-xl text-sm font-semibold hover:bg-sky-700 transition">
-                    ทำแบบทดสอบอีกครั้ง (สุ่มใหม่)
-                </button>
             </div>
+
+            <!-- Quiz Form Container -->
+            <form id="quiz-form" onsubmit="submitQuiz(event)" class="space-y-6">
+                
+                <div id="quiz-questions-container" class="space-y-6">
+                    <!-- Questions will be rendered dynamically via JS -->
+                </div>
+
+                <!-- Submit / Retry Control Bar -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col sm:flex-row justify-between items-center gap-4 sticky bottom-4 z-40">
+                    <div id="score-display" class="hidden text-slate-800">
+                        <span class="text-sm font-medium text-slate-500 block">คะแนนของคุณ</span>
+                        <div class="text-2xl font-bold text-navy-800"><span id="score-num" class="text-3xl text-ocean-600">0</span> / 10</div>
+                    </div>
+
+                    <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+                        <button type="button" id="reset-btn" onclick="resetQuiz()" class="hidden px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-100 transition text-sm">
+                            <i class="fa-solid fa-rotate-left mr-2"></i> ทำแบบทดสอบใหม่
+                        </button>
+                        <button type="submit" id="submit-btn" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-navy-600 to-ocean-600 hover:from-navy-800 hover:to-ocean-600 text-white font-bold shadow-md transition transform active:scale-95 text-sm">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> ตรวจคำตอบ
+                        </button>
+                    </div>
+                </div>
+
+            </form>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-6 mt-12 text-center text-xs">
-        <p>สื่อการเรียนรู้อิเล็กทรอนิกส์: การคำนวณค่าระวางการขนส่งทางเรือ | ผู้สอน: เพ็ญพักตร์ มโนธรรม</p>
+    <footer class="bg-navy-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>สื่อการเรียนรู้อิเล็กทรอนิกส์ วิชาการคำนวณค่าระวางการขนส่งทางเรือ (Sea Freight Calculation)</p>
+            <p class="text-slate-500">อ้างอิงจากเอกสารประกอบการสอนโดย อ.เพ็ญพักตร์ มโนธรรม</p>
+        </div>
     </footer>
 
+    <!-- JavaScript Application Logic -->
     <script>
-        var masterQuestions = [
+        // 10 Quiz Questions Dataset
+        const quizData = [
             {
-                question: "ข้อใดคือสูตรการคำนวณปริมาตรการวางกล่องสินค้า (Volume Weight: CBM) สำหรับการขนส่งแบบ LCL?",
+                id: 1,
+                question: "1. การวัดขนาดของกล่องสินค้าเพื่อนำมาคำนวณจำนวนบรรจุลงตู้คอนเทนเนอร์ ข้อใดถูกต้องที่สุด?",
                 options: [
-                    { text: "[กว้าง(ซม.) x ยาว(ซม.) x สูง(ซม.) x จำนวนกล่อง] ÷ 1,000,000", isCorrect: true },
-                    { text: "[กว้าง(ม.) x ยาว(ม.) x สูง(ม.) x จำนวนกล่อง] ÷ 1,000", isCorrect: false },
-                    { text: "[กว้าง(ซม.) x ยาว(ซม.) x สูง(ซม.)] ÷ น้ำหนักกล่อง", isCorrect: false },
-                    { text: "น้ำหนักกล่อง(กก.) x จำนวนกล่อง ÷ 1,000,000", isCorrect: false }
+                    "A. วัดจากขนาดภายในกล่องเสมอ",
+                    "B. วัดที่ส่วนนอกสุดของกล่องเสมอ",
+                    "C. วัดโดยไม่รวมส่วนที่ยื่นออกมานอกกล่อง",
+                    "D. วัดเฉพาะความยาวและความกว้าง ไม่ต้องวัดความสูง"
                 ],
-                explanation: "สูตรคำนวณ Volume Weight คือ กว้าง(cm) x ยาว(cm) x สูง(cm) x จำนวนสินค้า หารด้วย 1,000,000"
+                answer: 1, // Index B
+                explanation: "จากสไลด์หน้า 2 ในการเตรียมข้อมูลที่จำเป็น ขนาดของสินค้าแต่ละชิ้นจะต้อง 'วัดที่ส่วนนอกสุดเสมอ' เพื่อไม่ให้เกิดปัญหาตู้ติดขัดเวลานำสินค้าเข้าตู้จริง"
             },
             {
-                question: "สินค้าประเภทใดที่มักใช้อัตราคำนวณค่าระวางจากมูลค่าสินค้า (Ad Valorem goods : V) 3.5% จากราคา FOB?",
+                id: 2,
+                question: "2. สินค้าชนิดใดต่อไปนี้ เหมาะสมที่จะใช้ฐานการคำนวณค่าระวางแบบ 'น้ำหนักสินค้า' (Weight Ton : W)?",
                 options: [
-                    { text: "กระจก และกระเบื้องเซรามิค", isCorrect: false },
-                    { text: "เพชร พลอย ทองคำ และภาพเขียนมูลค่าสูง", isCorrect: true },
-                    { text: "ไม้ซุง และซุงแปรรูป", isCorrect: false },
-                    { text: "รถยนต์ และสัตว์มีชีวิต", isCorrect: false }
+                    "A. ไม้ซุง และ เฟอร์นิเจอร์",
+                    "B. เพชร พลอย และ ทองคำ",
+                    "C. เหล็กกล้า กระจก และ อาหารกระป๋อง",
+                    "D. รถยนต์ และ สัตว์มีชีวิต"
                 ],
-                explanation: "Ad Valorem ใช้กับสินค้ามีค่าสูง เช่น เพชร พลอย ทองคำ คิด 3.5% จากราคา FOB"
+                answer: 2, // Index C
+                explanation: "จากสไลด์หน้า 10 การคำนวณจากน้ำหนัก (Weight Ton: W) ใช้กับสินค้าที่มีน้ำหนักมาก เช่น เหล็กกล้า, โลหะ, กระจก, กระเบื้องเซรามิค, อาหารกระป๋อง"
             },
             {
-                question: "ค่า BAF (Bunker Adjustment Factor) หรือ FAF เรียกเก็บเพื่อจุดประสงค์ใด?",
+                id: 3,
+                question: "3. สินค้าประเภททองคำ เพชรพลอย หรือภาพเขียนทรงคุณค่า มักคิดค่าระวางตามข้อใด และคิดในอัตราเท่าใด?",
                 options: [
-                    { text: "ชดเชยกับความผันผวนของอัตราแลกเปลี่ยนเงินตรา", isCorrect: false },
-                    { text: "ชดเชยราคาน้ำมันเชื้อเพลิงในการขนส่งที่ปรับตัวสูงขึ้น", isCorrect: true },
-                    { text: "เป็นค่าธรรมเนียมรักษาความปลอดภัยที่ท่าเรือ", isCorrect: false },
-                    { text: "เป็นค่าปรับตู้สินค้าย้ายปลายทาง", isCorrect: false }
+                    "A. Weight Ton (W) คิดอัตรา 5% ของราคา CIF",
+                    "B. Measurement Ton (M) คิดตามปริมาตร CBM",
+                    "C. Ad Valorem (V) คิดอัตรา 3.5% จากราคา FOB",
+                    "D. Per Unit คิดเป็นรายชิ้นชิ้นละ 100 USD"
                 ],
-                explanation: "BAF/FAF คือค่าธรรมเนียมปรับตามราคาน้ำมันเชื้อเพลิง"
+                answer: 2, // Index C
+                explanation: "จากสไลด์หน้า 11 สินค้าราคาแพงจะคิดแบบ Ad Valorem goods (V) โดยมีหน่วยคำนวณคือ 3.5% จากราคา FOB Price"
             },
             {
-                question: "การคำนวณค่าระวางแบบ LCL จะต้องเปรียบเทียบระหว่างสิ่งใด แล้วใช้อัตราใด?",
+                id: 4,
+                question: "4. สูตรการคำนวณหาปริมาตรสินค้า (Volume Weight) หน่วยเป็น CBM สำหรับการขนส่งแบบ LCL คือข้อใด?",
                 options: [
-                    { text: "เปรียบเทียบ Volume Weight กับ Actual Weight แล้วใช้อัตราที่ 'น้อยกว่า'", isCorrect: false },
-                    { text: "เปรียบเทียบ Volume Weight กับ Actual Weight แล้วใช้อัตราที่ 'มากกว่า'", isCorrect: true },
-                    { text: "คิดเฉพาะ Actual Weight เสมอ", isCorrect: false },
-                    { text: "คิดเฉพาะราคาเหมาตู้คอนเทนเนอร์", isCorrect: false }
+                    "A. [กว้าง(ซม.) × ยาว(ซม.) × สูง(ซม.)] × จำนวนสินค้า ÷ 1,000",
+                    "B. [กว้าง(ซม.) × ยาว(ซม.) × สูง(ซม.)] × จำนวนสินค้า ÷ 1,000,000",
+                    "C. [กว้าง(ม.) × ยาว(ม.) × สูง(ม.)] ÷ 100",
+                    "D. น้ำหนักสินค้าต่อแพคเกจ (กก.) × จำนวนสินค้า ÷ 1,000"
                 ],
-                explanation: "ให้เปรียบเทียบ Volume Weight กับ Actual Weight ตัวเลขใดมากกว่าให้ใช้อัตรานั้น"
+                answer: 1, // Index B
+                explanation: "จากสไลด์หน้า 15 และ 16 สูตรคำนวณ Volume Weight (CBM) คือ [กว้าง(cm) x ยาว(cm) x สูง(cm)] x จำนวนสินค้า แล้วหารด้วย 1,000,000"
             },
             {
-                question: "ค่า CAF (Currency Adjustment Factor) คือค่าธรรมเนียมพิเศษเกี่ยวกับเรื่องใด?",
+                id: 5,
+                question: "5. ในการขนส่งทางทะเลแบบ LCL หากคำนวณ Volume Weight ได้ 3.6 CBM และคำนวณ Actual Weight ได้ 0.36 CBM (Ton) สายการเรือจะเลือกคิดค่าระวางจากอัตราใด?",
                 options: [
-                    { text: "ค่าปรับอัตราเงินตราต่างประเทศกรณีค่าเงินผันผวน", isCorrect: true },
-                    { text: "ค่าความล่าช้าเนื่องจากท่าเรือคับคั่ง", isCorrect: false },
-                    { text: "ค่าผ่านทางคลองสุเอซ", isCorrect: false },
-                    { text: "ค่าธรรมเนียมยกสินค้าหนักเกินกำหนด", isCorrect: false }
+                    "A. ใช้อัตราเฉลี่ย (3.6 + 0.36) ÷ 2 = 1.98 CBM",
+                    "B. ใช้อัตรา Actual Weight (0.36 CBM) เพราะคิดค่าน้ำหนักจริง",
+                    "C. ใช้อัตรา Volume Weight (3.6 CBM) เพราะเปรียบเทียบแล้วมากกว่า",
+                    "D. ให้ผู้ส่งออกเลือกเองว่าต้องการใช้อัตราใด"
                 ],
-                explanation: "CAF ย่อมาจาก Currency Adjustment Factor ชดเชยกรณีค่าเงินลดลง"
+                answer: 2, // Index C
+                explanation: "จากสไลด์หน้า 17 หลักการขนส่ง LCL คือเปรียบเทียบระหว่าง Volume Weight กับ Actual Weight ว่าอันไหน 'มากกว่า' ให้ใช้อัตรานั้น ดังนั้นจึงต้องใช้ 3.6 CBM"
             },
             {
-                question: "เมื่อสินค้ามีน้ำหนักต่อชิ้นเกินกว่าเกณฑ์ จนต้องใช้ปั้นจั่นยก จะถูกเรียกเก็บค่าธรรมเนียมใด?",
+                id: 6,
+                question: "6. BAF หรือ FAF (Bunker / Fuel Adjustment Factor) คือค่าธรรมเนียมพิเศษที่เรียกเก็บเนื่องจากสาเหตุใด?",
                 options: [
-                    { text: "Congestion Surcharge", isCorrect: false },
-                    { text: "Heavy Lift Charge", isCorrect: true },
-                    { text: "Container Imbalance Surcharge (CIC)", isCorrect: false },
-                    { text: "Automatic Manifest System (AMS)", isCorrect: false }
+                    "A. เพื่อชดเชยการความผันผวนของอัตราแลกเปลี่ยนเงินตราต่างประเทศ",
+                    "B. เพื่อชดเชยราคาน้ำมัน หรือราคาเชื้อเพลิงในการขนส่งที่ปรับตัวสูงขึ้น",
+                    "C. ค่าปรับกรณีเรือต้องจอดรอท่าเนื่องจากท่าเรือคับคั่ง",
+                    "D. ค่ารักษาความปลอดภัยของตู้สินค้าที่ท่าเรือปลายทาง"
                 ],
-                explanation: "Heavy Lift Charge คือค่าเก็บน้ำหนักเกินกำหนดที่ต้องใช้ปั้นจั่น"
+                answer: 1, // Index B
+                explanation: "จากสไลด์หน้า 19 BAF / FAF (Bunker/Fuel Adjustment Factor) หรือ EBS เป็นค่าปรับตามอัตราราคาน้ำมัน เพื่อชดเชยราคาน้ำมัน/เชื้อเพลิงที่ปรับตัวสูงขึ้น"
             },
             {
-                question: "ค่าระวางพิเศษ O.C.P. (Overland Common Point) หมายถึงการขนส่งในรูปแบบใดต่อจากทางทะเล?",
+                id: 7,
+                question: "7. ค่า CAF (Currency Adjustment Factor) ย่อมาจากอะไร และเก็บเพื่อวัตถุประสงค์ใด?",
                 options: [
-                    { text: "การใช้เรือลำที่สองถ่ายลำ", isCorrect: false },
-                    { text: "การใช้รถไฟรับช่วงขนส่งต่อจากทางทะเลไปโรงงานปลายทาง", isCorrect: true },
-                    { text: "การใช้เครื่องบินขนส่งด่วน", isCorrect: false },
-                    { text: "การลากตู้สินค้าคืนลานตู้เปล่า", isCorrect: false }
+                    "A. Container Adjustment Fee – ชดเชยตู้คอนเทนเนอร์ไม่เพียงพอ",
+                    "B. Canal Adjustment Factor – ค่าผ่านทางคลองสุเอซและปานามา",
+                    "C. Currency Adjustment Factor – ชดเชยความผันผวนของอัตราแลกเปลี่ยนเงินตรา",
+                    "D. Customs Allowance Fee – ค่าธรรมเนียมผ่านพิธีการศุลกากร"
                 ],
-                explanation: "O.C.P ส่วนมากหมายถึงการใช้รถไฟรับช่วงขนส่งต่อจากทางทะเล"
+                answer: 2, // Index C
+                explanation: "จากสไลด์หน้า 20 CAF ย่อมาจาก Currency Adjustment Factor เป็นค่าปรับอัตราเงินตราเพื่อชดเชยในกรณีที่มีบางประเทศค่าเงินลดลง"
             },
             {
-                question: "ค่าธรรมเนียม AMS (Automatic Manifest System) เรียกเก็บเนื่องจากมาตรการใด?",
+                id: 8,
+                question: "8. ค่าระวางพิเศษที่เรียกว่า 'Congestion Surcharge' จะเรียกเก็บในกรณีใด?",
                 options: [
-                    { text: "ค่าบริการเปิด-ปิดประตูตู้คอนเทนเนอร์", isCorrect: false },
-                    { text: "ค่าป้อนข้อมูล 24 ชั่วโมงก่อนขนถ่าย เพื่อป้องกันผู้ก่อการร้าย", isCorrect: true },
-                    { text: "ค่าขนส่งช่วงฤดูกาลที่มีความต้องการสูง", isCorrect: false },
-                    { text: "ค่าผ่านน่านน้ำแคริบเบียน", isCorrect: false }
+                    "A. เมื่อสินค้ามีน้ำหนักเกินกำหนด เช่น เกิน 2 ตันขึ้นไป",
+                    "B. เมื่อต้องใช้รถไฟรับช่วงขนส่งต่อจากท่าเรือไปยังโรงงาน",
+                    "C. เมื่อเกิดความล่าช้าเนื่องจากท่าเรือคับคั่ง คนงานไม่พอ หรือมีการนัดหยุดงาน",
+                    "D. เมื่อสินค้ามีความยาวเกิน 30 ฟุต"
                 ],
-                explanation: "AMS คือค่าคีย์ข้อมูลล่วงหน้า 24 ชม. ตามมาตรการป้องกันผู้ก่อการร้าย"
+                answer: 2, // Index C
+                explanation: "จากสไลด์หน้า 21 Congestion Surcharge คือค่าท่าเรือคับคั่ง จะเรียกเก็บในกรณีท่าเรือคับคั่ง คนงานไม่พอ เกิดจลาจล สงคราม หรือการนัดหยุดงานของคนงาน"
             },
             {
-                question: "การบรรจุสินค้าเข้าตู้คอนเทนเนอร์ นอกจากคำนวณมิติตัวกล่องแล้ว สิ่งสำคัญที่ห้ามละเลยคืออะไร?",
+                id: 9,
+                question: "9. ข้อใดอธิบายความหมายของ O.C.P (Overland Common Point) ได้ถูกต้อง?",
                 options: [
-                    { text: "สีของกล่องบรรจุภัณฑ์", isCorrect: false },
-                    { text: "น้ำหนักบรรทุกสูงสุด (Payload Maximum) ของตู้", isCorrect: true },
-                    { text: "ระยะทางของท่าเรือปลายทาง", isCorrect: false },
-                    { text: "ชื่อของผู้จัดส่งสินค้า", isCorrect: false }
+                    "A. การใช้รถไฟรับช่วงขนส่งต่อจากท่าเรือปลายทางไปยังจุดหมาย",
+                    "B. ค่ารักษาความปลอดภัยบริเวณอ่าวเอเดน",
+                    "C. ค่าธรรมเนียมผ่านทางพิเศษ Alameda Corridor ในประเทศสหรัฐอเมริกา",
+                    "D. ค่าใช้จ่ายที่เพิ่มขึ้นในช่วงฤดูกาลส่งออกสูง (Peak Season)"
                 ],
-                explanation: "ต้องระวังไม่ให้น้ำหนักรวมเกิน Payload สูงสุดของตู้คอนเทนเนอร์"
+                answer: 0, // Index A
+                explanation: "จากสไลด์หน้า 24 O.C.P = Overland Common Point ส่วนมากหมายถึงการใช้รถไฟรับช่วงขนส่งต่อจากการขนส่งทางทะเลไปยังปลายทาง"
             },
             {
-                question: "ค่า CIC (Container Imbalance Surcharge) เกิดจากสาเหตุใด?",
+                id: 10,
+                question: "10. รหัสค่าธรรมเนียมพิเศษในข้อใดถูกต้องสำหรับการผ่านทาง 'คลองสุเอซ' (Suez Canal) และ 'คลองปานามา' (Panama Canal)?",
                 options: [
-                    { text: "ค่าธรรมเนียมเมื่อเรือผ่านคลองปานามา", isCorrect: false },
-                    { text: "ความไม่สมดุลในการนำเข้า-ส่งออกของจำนวนตู้คอนเทนเนอร์", isCorrect: true },
-                    { text: "การยกเลิกการเดินทางของเรือ", isCorrect: false },
-                    { text: "ค่าประกันภัยสินค้าอันตราย", isCorrect: false }
+                    "A. SUZ = คลองสุเอซ / PAN = คลองปานามา",
+                    "B. AGS = คลองสุเอซ / ALMD = คลองปานามา",
+                    "C. CIC = คลองสุเอซ / AMS = คลองปานามา",
+                    "D. PSS = คลองสุเอซ / GRI = คลองปานามา"
                 ],
-                explanation: "CIC คือค่าความไม่สมดุลในการนำเข้าและส่งออกตู้คอนเทนเนอร์"
+                answer: 0, // Index A
+                explanation: "จากสไลด์หน้า 25 และ 26 SUZ = Suez Canal Fee (ค่าผ่านทางคลอง Suez) และ PAN = Panama Canal Fee (ค่าผ่านทางคลอง Panama)"
             }
         ];
 
-        var activeQuestions = [];
+        // State variables
+        let isSubmitted = false;
 
-        function shuffleArray(array) {
-            var shuffled = JSON.parse(JSON.stringify(array));
-            for (var i = shuffled.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var temp = shuffled[i];
-                shuffled[i] = shuffled[j];
-                shuffled[j] = temp;
-            }
-            return shuffled;
-        }
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuizQuestions();
+        });
 
-        function switchTab(tab) {
-            var summarySec = document.getElementById('section-summary');
-            var quizSec = document.getElementById('section-quiz');
-            var summaryBtn = document.getElementById('tab-summary-btn');
-            var quizBtn = document.getElementById('tab-quiz-btn');
+        // Tab Switching Logic
+        function switchTab(tabName) {
+            const summaryTab = document.getElementById('tab-summary');
+            const quizTab = document.getElementById('tab-quiz');
+            const summaryBtn = document.getElementById('tab-btn-summary');
+            const quizBtn = document.getElementById('tab-btn-quiz');
 
-            if (tab === 'summary') {
-                summarySec.classList.remove('hidden');
-                quizSec.classList.add('hidden');
-                summaryBtn.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white shadow";
-                quizBtn.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white";
+            if (tabName === 'summary') {
+                summaryTab.classList.remove('hidden');
+                quizTab.classList.add('hidden');
+                
+                summaryBtn.className = "flex-1 md:flex-initial px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 bg-white text-navy-800 shadow";
+                quizBtn.className = "flex-1 md:flex-initial px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 text-white hover:bg-white/10";
             } else {
-                summarySec.classList.add('hidden');
-                quizSec.classList.remove('hidden');
-                quizBtn.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 bg-sky-600 text-white shadow";
-                summaryBtn.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white";
-                renderQuiz();
+                summaryTab.classList.add('hidden');
+                quizTab.classList.remove('hidden');
+
+                quizBtn.className = "flex-1 md:flex-initial px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 bg-white text-navy-800 shadow";
+                summaryBtn.className = "flex-1 md:flex-initial px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center space-x-2 text-white hover:bg-white/10";
             }
         }
 
-        function renderQuiz() {
-            var quizForm = document.getElementById('quiz-form');
-            quizForm.innerHTML = '';
+        // Render Quiz Questions Dynamic HTML
+        function renderQuizQuestions() {
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
 
-            activeQuestions = shuffleArray(masterQuestions);
+            quizData.forEach((q, qIndex) => {
+                const qCard = document.createElement('div');
+                qCard.id = `question-card-${q.id}`;
+                qCard.className = "bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 transition-all duration-200";
 
-            activeQuestions.forEach(function(qItem, qIndex) {
-                qItem.options = shuffleArray(qItem.options);
-
-                var qCard = document.createElement('div');
-                qCard.className = "bg-white rounded-2xl p-6 border border-slate-200 shadow-sm";
-                qCard.id = "q-card-" + qIndex;
-
-                var prefixLabels = ['ก', 'ข', 'ค', 'ง'];
-                var optionsHTML = '';
-                qItem.options.forEach(function(opt, optIndex) {
-                    optionsHTML += 
-                        '<label class="flex items-start p-3.5 rounded-xl border border-slate-200 hover:bg-sky-50 cursor-pointer transition text-sm group" id="opt-label-' + qIndex + '-' + optIndex + '">' +
-                            '<input type="radio" name="q_' + qIndex + '" value="' + optIndex + '" class="mt-0.5 text-sky-600 h-4 w-4 border-slate-300" onchange="clearCardWarning(' + qIndex + ')">' +
-                            '<span class="ml-3 font-semibold text-slate-500 mr-2">' + prefixLabels[optIndex] + '.</span>' +
-                            '<span class="text-slate-700 leading-relaxed">' + opt.text + '</span>' +
-                        '</label>';
+                let optionsHTML = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHTML += `
+                        <label id="label-q${q.id}-opt${optIndex}" class="flex items-start p-3.5 rounded-xl border border-slate-200 hover:border-ocean-500 hover:bg-slate-50/80 cursor-pointer transition-all duration-150">
+                            <input type="radio" name="q${q.id}" value="${optIndex}" class="mt-1 text-ocean-600 focus:ring-ocean-500 h-4 w-4 border-slate-300" ${isSubmitted ? 'disabled' : ''}>
+                            <span class="ml-3 text-sm text-slate-700 leading-relaxed font-normal">${opt}</span>
+                        </label>
+                    `;
                 });
 
-                qCard.innerHTML = 
-                    '<div class="flex items-center justify-between mb-3">' +
-                        '<span class="px-2.5 py-1 bg-sky-100 text-sky-800 rounded-lg text-xs font-bold font-heading">ข้อที่ ' + (qIndex + 1) + '</span>' +
-                        '<span id="badge-status-' + qIndex + '" class="hidden text-xs px-2.5 py-1 rounded-full font-semibold"></span>' +
-                    '</div>' +
-                    '<h3 class="font-bold text-slate-800 text-base mb-4 font-heading">' + qItem.question + '</h3>' +
-                    '<div class="space-y-2.5">' + optionsHTML + '</div>' +
-                    '<div id="explanation-' + qIndex + '" class="hidden mt-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 leading-relaxed">' +
-                        '📌 <strong>คำอธิบาย:</strong> ' + qItem.explanation +
-                    '</div>';
-                quizForm.appendChild(qCard);
+                qCard.innerHTML = `
+                    <div class="flex items-start justify-between gap-4 mb-3">
+                        <h3 class="font-bold text-navy-800 text-base leading-snug">${q.question}</h3>
+                        <span id="badge-q${q.id}" class="hidden text-xs px-2.5 py-1 rounded-full font-semibold"></span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                        ${optionsHTML}
+                    </div>
+                    <div id="explanation-q${q.id}" class="hidden mt-4 p-4 rounded-xl text-xs leading-relaxed border"></div>
+                `;
+
+                container.appendChild(qCard);
+            });
+        }
+
+        // Submit Quiz and Calculate Score
+        function submitQuiz(event) {
+            event.preventDefault();
+            if (isSubmitted) return;
+
+            let score = 0;
+            let answeredCount = 0;
+
+            // Check how many questions answered
+            quizData.forEach(q => {
+                const selectedOpt = document.querySelector(`input[name="q${q.id}"]:checked`);
+                if (selectedOpt) answeredCount++;
             });
 
-            document.getElementById('quiz-result-card').classList.add('hidden');
-            document.getElementById('quiz-submit-container').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function clearCardWarning(qIndex) {
-            document.getElementById('q-card-' + qIndex).classList.remove('border-rose-400', 'bg-rose-50/20');
-        }
-
-        function calculateQuizScore() {
-            var score = 0;
-            var allAnswered = true;
-
-            activeQuestions.forEach(function(qItem, qIndex) {
-                var selected = document.querySelector('input[name="q_' + qIndex + '"]:checked');
-                var card = document.getElementById('q-card-' + qIndex);
-                if (!selected) {
-                    allAnswered = false;
-                    card.classList.add('border-rose-400', 'bg-rose-50/20');
+            if (answeredCount < quizData.length) {
+                if (!confirm(`คุณตอบคำตอบไปเพียง ${answeredCount} จาก ${quizData.length} ข้อ ต้องการส่งคำตอบเลยหรือไม่?`)) {
+                    return;
                 }
-            });
-
-            if (!allAnswered) {
-                alert('กรุณาตอบคำถามให้ครบทั้ง 10 ข้อครับ');
-                return;
             }
 
-            activeQuestions.forEach(function(qItem, qIndex) {
-                var selectedOptionIndex = parseInt(document.querySelector('input[name="q_' + qIndex + '"]:checked').value);
-                var selectedOption = qItem.options[selectedOptionIndex];
-                var badge = document.getElementById('badge-status-' + qIndex);
-                var expDiv = document.getElementById('explanation-' + qIndex);
+            isSubmitted = true;
 
-                qItem.options.forEach(function(opt, optIndex) {
-                    var label = document.getElementById('opt-label-' + qIndex + '-' + optIndex);
-                    if (opt.isCorrect) {
-                        label.classList.add('bg-emerald-50', 'border-emerald-400', 'text-emerald-900', 'font-medium');
-                    } else if (optIndex === selectedOptionIndex && !opt.isCorrect) {
-                        label.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-900');
+            // Process score & highlight answers
+            quizData.forEach(q => {
+                const selectedOpt = document.querySelector(`input[name="q${q.id}"]:checked`);
+                const userChoice = selectedOpt ? parseInt(selectedOpt.value) : -1;
+                const isCorrect = userChoice === q.answer;
+
+                const qCard = document.getElementById(`question-card-${q.id}`);
+                const badge = document.getElementById(`badge-q${q.id}`);
+                const expBox = document.getElementById(`explanation-q${q.id}`);
+
+                // Disable inputs
+                const inputs = document.querySelectorAll(`input[name="q${q.id}"]`);
+                inputs.forEach(i => i.disabled = true);
+
+                // Highlight Correct / Incorrect Options
+                q.options.forEach((_, optIdx) => {
+                    const lbl = document.getElementById(`label-q${q.id}-opt${optIdx}`);
+                    if (optIdx === q.answer) {
+                        lbl.className = "flex items-start p-3.5 rounded-xl border-2 border-emerald-500 bg-emerald-50/60 font-medium text-emerald-900";
+                    } else if (optIdx === userChoice && !isCorrect) {
+                        lbl.className = "flex items-start p-3.5 rounded-xl border-2 border-rose-400 bg-rose-50/60 text-rose-900";
+                    } else {
+                        lbl.className = "flex items-start p-3.5 rounded-xl border border-slate-100 opacity-50 bg-slate-50";
                     }
                 });
 
-                if (selectedOption.isCorrect) {
-                    score++;
-                    badge.textContent = "ถูกต้อง";
-                    badge.className = "text-xs px-2.5 py-1 rounded-full font-semibold bg-emerald-100 text-emerald-800";
-                } else {
-                    badge.textContent = "ตอบผิด";
-                    badge.className = "text-xs px-2.5 py-1 rounded-full font-semibold bg-rose-100 text-rose-800";
-                }
+                // Show Question Badge
                 badge.classList.remove('hidden');
-                expDiv.classList.remove('hidden');
+                if (isCorrect) {
+                    score++;
+                    badge.className = "text-xs px-2.5 py-1 rounded-full font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200";
+                    badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> ถูกต้อง`;
+                    qCard.classList.add('border-emerald-200');
+                } else {
+                    badge.className = "text-xs px-2.5 py-1 rounded-full font-semibold bg-rose-100 text-rose-700 border border-rose-200";
+                    badge.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> ไม่ถูกต้อง`;
+                    qCard.classList.add('border-rose-200');
+                }
+
+                // Show Explanation
+                expBox.classList.remove('hidden');
+                expBox.className = isCorrect 
+                    ? "mt-4 p-3.5 rounded-xl text-xs bg-emerald-50/80 border border-emerald-200/80 text-emerald-900"
+                    : "mt-4 p-3.5 rounded-xl text-xs bg-slate-50 border border-slate-200 text-slate-700";
+                
+                expBox.innerHTML = `
+                    <p class="font-bold mb-1 ${isCorrect ? 'text-emerald-800' : 'text-slate-800'}">
+                        <i class="fa-solid fa-circle-info mr-1"></i> คำอธิบายเฉลย:
+                    </p>
+                    <p>${q.explanation}</p>
+                `;
             });
 
-            var resultCard = document.getElementById('quiz-result-card');
-            var resultIcon = document.getElementById('result-icon-container');
-            document.getElementById('result-score-num').textContent = score;
+            // Update UI Score & Buttons
+            document.getElementById('score-num').innerText = score;
+            document.getElementById('score-display').classList.remove('hidden');
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.getElementById('reset-btn').classList.remove('hidden');
 
-            if (score >= 8) {
-                resultIcon.className = "w-16 h-16 rounded-full flex items-center justify-center mx-auto text-3xl bg-emerald-100 text-emerald-600";
-                resultIcon.textContent = "🏆";
-                document.getElementById('result-feedback').textContent = "ยอดเยี่ยมมาก! คุณมีความเข้าใจในเรื่องการคำนวณค่าระวางเป็นอย่างดี";
-            } else if (score >= 5) {
-                resultIcon.className = "w-16 h-16 rounded-full flex items-center justify-center mx-auto text-3xl bg-sky-100 text-sky-600";
-                resultIcon.textContent = "👍";
-                document.getElementById('result-feedback').textContent = "ผ่านเกณฑ์! คุณมีความรู้พื้นฐานที่ดี";
-            } else {
-                resultIcon.className = "w-16 h-16 rounded-full flex items-center justify-center mx-auto text-3xl bg-amber-100 text-amber-600";
-                resultIcon.textContent = "📚";
-                document.getElementById('result-feedback').textContent = "พยายามอีกนิดนะ! ลองกลับไปอ่านทบทวนสรุปบทเรียนแล้วลองใหม่";
-            }
+            const statusBadge = document.getElementById('quiz-status-badge');
+            statusBadge.className = "bg-emerald-100 text-emerald-800 px-4 py-2 rounded-xl text-sm font-semibold flex items-center space-x-2";
+            statusBadge.innerHTML = `<i class="fa-solid fa-square-poll-vertical"></i> <span>ทำแบบทดสอบเสร็จแล้ว: ${score}/10 คะแนน</span>`;
 
-            resultCard.classList.remove('hidden');
-            document.getElementById('quiz-submit-container').classList.add('hidden');
-            resultCard.scrollIntoView({ behavior: 'smooth' });
+            // Scroll to bottom control bar
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Reset Quiz State
+        function resetQuiz() {
+            isSubmitted = false;
+            renderQuizQuestions();
+
+            document.getElementById('score-display').classList.add('hidden');
+            document.getElementById('submit-btn').classList.remove('hidden');
+            document.getElementById('reset-btn').classList.add('hidden');
+
+            const statusBadge = document.getElementById('quiz-status-badge');
+            statusBadge.className = "bg-slate-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium flex items-center space-x-2";
+            statusBadge.innerHTML = `<i class="fa-solid fa-clock"></i> <span>สถานะ: ยังไม่ได้ส่งทำแบบทดสอบ</span>`;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
